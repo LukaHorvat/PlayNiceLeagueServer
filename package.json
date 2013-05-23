@@ -1,0 +1,15 @@
+{
+  "name": "PlayNiceLeagueServer",
+  "version": "0.0.0",
+  "description": "The server for the PlayNiceLeague application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },  
+  "dependencies" : {
+    "mongoose"   :  "*"
+  },
+  "repository": "",
+  "author": "",
+  "license": "BSD"
+}
