@@ -1,4 +1,4 @@
-var io = require("socket.io");
+var io = require("socket.io").listen(8442);
 var _ = require("underscore");
 var storage = require("./storage");
 var stats = require("./stats");
@@ -90,4 +90,4 @@ io.sockets.on("connection", function (socket) {
 	socket.on("error", function (err) {
 		console.log("Socket errored with " + err);
 	});
-}).listen(8442);
+});
