@@ -9,7 +9,8 @@
   "dependencies" : {
     "mongoose"    : "*",
     "buffertools" : "*",
-    "underscore"  : "*"
+    "underscore"  : "*",
+    "time"        : "*"
   },
   "repository": "",
   "author": "",
