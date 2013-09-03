@@ -10,7 +10,8 @@
     "mongoose"    : "*",
     "buffertools" : "*",
     "underscore"  : "*",
-    "time"        : "*"
+    "time"        : "*",
+    "socket.io"   : "*"
   },
   "repository": "",
   "author": "",

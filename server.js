@@ -1,9 +1,14 @@
-var net = require("net");
+var io = require("socket.io");
 var _ = require("underscore");
 var storage = require("./storage");
 var stats = require("./stats");
 
-net.createServer(function (socket) {
+io.configure(function () { 
+  	io.set("transports", ["xhr-polling"]); 
+  	io.set("polling duration", 10); 
+});
+
+io.sockets.on("connection", function (socket) {
 	var buffer = new Buffer(0);
 	var waitFor = 0;
 
