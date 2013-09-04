@@ -108,5 +108,7 @@
 		});
 	};
 
-	module.exports = this;
+	module.exports.getMatchHistory = getMatchHistory;
+	module.exports.getLastGame = getLastGame;
+	module.exports.checkSubmitValidity = checkSubmitValidity;
 }).call(this);

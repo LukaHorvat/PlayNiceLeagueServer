@@ -1,14 +1,5 @@
 (function () {
-
 	var mongoose = require("mongoose");
-
-	mongoose.connect(process.env.MONGOLAB_URI);
-
-	var db = mongoose.connection;
-	db.on('error', console.error.bind(console, 'connection error:'));
-	db.once('open', function callback () {
-	  	console.log("Connected to database");
-	});
 
 	var defaultNew = function (name, serv) {
 		return {
@@ -84,6 +75,16 @@
 		});
 	}
 
-	module.exports = this;
+	module.exports.addRating = addRating;
+	module.exports.addTag = addTag;
+	module.exports.getPlayer = getPlayer;
+
+	mongoose.connect(process.env.MONGOLAB_URI);
+
+	var db = mongoose.connection;
+	db.on('error', console.error.bind(console, 'connection error:'));
+	db.once('open', function callback () {
+	  	console.log("Connected to database");
+	});
 }).call(this);
 

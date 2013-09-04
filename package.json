@@ -11,7 +11,7 @@
     "buffertools" : "*",
     "underscore"  : "*",
     "time"        : "*",
-    "socket.io"   : "*"
+    "express"   : "*"
   },
   "repository": "",
   "author": "",
