@@ -1,4 +1,4 @@
-var io = require("socket.io").listen(process.env.PORT || 5000);
+var io = require("socket.io").listen(parseInt(process.env.PORT) || 5000);
 var _ = require("underscore");
 var storage = require("./storage");
 var stats = require("./stats");
