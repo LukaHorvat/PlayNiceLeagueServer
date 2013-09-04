@@ -24,6 +24,7 @@ app.post("/", function (request, response) {
 	var req = request.body;
 	try {
 		if (["na", "euw", "eun"].indexOf(req.server) === -1) throw new Error("The server code isn't recognized");
+		console.log(req);
 		if (req.type === "lookup") {
 			var count = 0;
 			var array = [];
@@ -38,8 +39,7 @@ app.post("/", function (request, response) {
 					}
 				});
 			});
-		} else if (req.type === "submit")
-		{
+		} else if (req.type === "submit") {
 			checkSubmitValidity(req.reporter, req.reportedId, req.server, function (res) {
 				if (res) {
 					storage.addRating(req.reportedName, req.server, req.rating, function () {
