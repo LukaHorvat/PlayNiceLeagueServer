@@ -19,11 +19,12 @@ app.configure(function () {
 banList = {};
 
 app.post("/", function (request, response) {
-	console.log("Connection from: " + request.ip);
-	console.log(request.connection.remoteAddress);
-	var ban = banList[request.ip];
+	var ip = request.get("X-Forwarded-For");
+	console.log("Connection from: " + ip);
+
+	var ban = banList[ip];
 	if (ban) {
-		if (Date.now() - ban.time > 15 * 60 * 1000) delete banList[request.ip];
+		if (Date.now() - ban.time > 15 * 60 * 1000) delete banList[ip];
 		else {
 			ban.time = Date.now();
 			return;
@@ -58,8 +59,8 @@ app.post("/", function (request, response) {
 						}
 					});
 				} else {
-					console.log("Invalid report, banned IP: " + request.ip);
-					banList[request.ip] = {
+					console.log("Invalid report, banned IP: " + ip);
+					banList[ip] = {
 						time: Date.now()
 					};
 				}
@@ -67,11 +68,18 @@ app.post("/", function (request, response) {
 		}
 	} catch (err) {
 		console.log("Bad data, error: " + err);
-		console.log("banned IP: " + request.ip);
-		banList[request.ip] = {
+		console.log("banned IP: " + ip);
+		banList[ip] = {
 			time: Date.now()
 		};
 	}
+});
+
+app.get("/", function (request, response) {
+	console.log("Get request");
+	console.log(request.connection.remoteAddress);
+	console.log(request.get("X-Forwarded-For"));
+	response.send("This server doesn't respond to GET requests");
 });
 
 app.listen(process.env.PORT);
