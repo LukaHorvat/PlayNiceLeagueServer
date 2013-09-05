@@ -19,6 +19,8 @@ app.configure(function () {
 banList = {};
 
 app.post("/", function (request, response) {
+	console.log("Connection from: " + request.ip);
+	console.log(request.connection.remoteAddress);
 	var ban = banList[request.ip];
 	if (ban) {
 		if (Date.now() - ban.time > 15 * 60 * 1000) delete banList[request.ip];
