@@ -19,7 +19,7 @@ app.configure(function () {
 banList = {};
 
 app.post("/", function (request, response) {
-	var ip = request.get("X-Forwarded-For");
+	var ip = request.get("X-Forwarded-For").split(",")[0];
 	console.log("Connection from: " + ip);
 
 	var ban = banList[ip];
@@ -50,8 +50,15 @@ app.post("/", function (request, response) {
 				});
 			});
 		} else if (req.type === "submit") {
+			if (storage.getAPICalls() >= 450) {
+				console.log("TOO MANY REQUESTS, NEED MORE MONEY");
+				return;
+			}
 			checkSubmitValidity(req.reporter, req.reportedId, req.server, function (res) {
-				if (res) {
+				if (res.requiredAPI) {
+
+				}
+				if (res.valid) {
 					storage.addRating(req.reportedName, req.server, req.rating, function () {
 						if (req.rating === -1) {
 							if (["solo", "quitter", "bully"].indexOf(req.tag) === -1) throw new Error("The tag isn't recognized");
@@ -77,7 +84,6 @@ app.post("/", function (request, response) {
 
 app.get("/", function (request, response) {
 	console.log("Get request");
-	console.log(request.connection.remoteAddress);
 	console.log(request.get("X-Forwarded-For"));
 	response.send("This server doesn't respond to GET requests");
 });

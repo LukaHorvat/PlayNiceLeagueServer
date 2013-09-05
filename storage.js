@@ -1,5 +1,6 @@
 (function () {
 	var mongoose = require("mongoose");
+	var time = require("time")(Date);
 
 	var defaultNew = function (name, serv) {
 		return {
@@ -25,6 +26,11 @@
 			solo: Number,
 			bully: Number
 		}
+	});
+
+	var APICounter = mongoose.model("APICounter", {
+		number: Number,
+		day: Number
 	});
 
 	var addRating = function (name, serv, rating, callback) {
@@ -68,6 +74,31 @@
 		});
 	}
 
+	var incrementAPICalls = function () {
+		APICounter.findOne({}, function (err, counter) {
+			var day = new time.Date().getDay();
+			if (counter === null) {
+				counter = new APICounter({
+					number: 0,
+					day: day
+				});
+			}
+			if (counter.day !== day) {
+				counter.number = 0;
+				counter.day = day;
+			}
+			counter.number++;
+			counter.save();
+		});
+	}
+
+	var getAPICalls = function () {
+		APICounter.findOne({}, function (err, counter) {
+			if (counter === null) return 0;
+			else return counter.number;
+		});
+	}
+
 	//for testing purposes
 	var clearDatabase = function (callback) {
 		db.db.dropDatabase(function () {
@@ -78,6 +109,7 @@
 	module.exports.addRating = addRating;
 	module.exports.addTag = addTag;
 	module.exports.getPlayer = getPlayer;
+	module.exports.incrementAPICalls = incrementAPICalls;
 
 	mongoose.connect(process.env.MONGOLAB_URI);
 
@@ -85,6 +117,7 @@
 	db.on('error', console.error.bind(console, 'connection error:'));
 	db.once('open', function callback () {
 	  	console.log("Connected to database");
+		incrementAPICalls();
 	});
-}).call(this);
 
+}).call(this);
