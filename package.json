@@ -11,7 +11,8 @@
     "buffertools" : "*",
     "underscore"  : "*",
     "time"        : "*",
-    "express"   : "*"
+    "express"     : "*",
+    "nodetime"    : "*"
   },
   "repository": "",
   "author": "",

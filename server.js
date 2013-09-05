@@ -1,3 +1,10 @@
+if(process.env.NODETIME_ACCOUNT_KEY) {
+  	require('nodetime').profile({
+    	accountKey: process.env.NODETIME_ACCOUNT_KEY,
+    	appName: 'Play Nice League' // optional
+  	});
+}
+
 var storage = require("./storage");
 var stats = require("./stats");
 var _ = require("underscore");
@@ -49,12 +56,16 @@ app.post("/", function (request, response) {
 						}
 					});
 				} else {
-					//Add penalty for faulty report
+					console.log("Invalid report, banned IP: " + request.ip);
+					banList[request.ip] = {
+						time: Date.now()
+					};
 				}
 			});
 		}
 	} catch (err) {
 		console.log("Bad data, error: " + err);
+		console.log("banned IP: " + request.ip);
 		banList[request.ip] = {
 			time: Date.now()
 		};
