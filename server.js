@@ -56,7 +56,7 @@ app.post("/", function (request, response) {
 			}
 			checkSubmitValidity(req.reporter, req.reportedId, req.server, function (res) {
 				if (res.requiredAPI) {
-
+					storage.incrementAPICall();
 				}
 				if (res.valid) {
 					storage.addRating(req.reportedName, req.server, req.rating, function () {

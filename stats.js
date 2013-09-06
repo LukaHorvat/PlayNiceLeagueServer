@@ -89,7 +89,10 @@
 			} else if (spamCache[i].reporter === reporter && spamCache[i].reportedId === reportedId && spamCache[i].server === server) {
 				cache.splice(0, 1);
 				spamCache.push(log);
-				callback(false);
+				callback({
+					valid: false,
+					requiredAPI: false 
+				});
 				return;
 			}
 		}
@@ -99,11 +102,20 @@
 			spamCache.push(log);
 			now.setTimezone("America/Los_Angeles");
 			if (now - new time.Date(game.time) > 5 * 60 * 1000) {
-				callback(false);
+				callback({
+					valid: false,
+					requiredAPI: true 
+				});
 			} else if (game.players.indexOf(reportedId) !== -1) {
-			 	callback(true);
+			 	callback({
+					valid: true,
+					requiredAPI: true 
+				});
 			} else {
-				callback(false);
+				callback({
+					valid: false,
+					requiredAPI: true 
+				});
 			}
 		});
 	};
