@@ -110,6 +110,7 @@
 	module.exports.addTag = addTag;
 	module.exports.getPlayer = getPlayer;
 	module.exports.incrementAPICalls = incrementAPICalls;
+	module.exports.getAPICalls = getAPICalls;
 
 	mongoose.connect(process.env.MONGOLAB_URI);
 
