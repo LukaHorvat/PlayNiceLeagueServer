@@ -1,0 +1,37 @@
+#box {
+  margin-top: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 510px;
+}
+#textinput {
+  font-size: 50px;
+  font-family: "Open Sans" sans-serif;
+  font-weight: 300;
+  width: 500px;
+}
+.button {
+  width: 161.66666666666666px;
+  height: 95px;
+  float: left;
+  text-align: center;
+  background-color: #aaa;
+  margin: 5px;
+  display: block;
+}
+.button p {
+  line-height: 95px;
+}
+.button :hover {
+  background-color: #999;
+  cursor: pointer;
+}
+.buttontext {
+  font-size: 30px;
+  margin-top: 0px;
+  height: 100%;
+  display: block;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}

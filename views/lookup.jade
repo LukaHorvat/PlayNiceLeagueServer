@@ -1,0 +1,18 @@
+doctype 5
+html(lang="en")
+	head
+		title Summoner rating lookup - Play Nice(,) League
+		link(rel="stylesheet", href="/global.css")
+		link(rel="stylesheet", href="/lookup.css")
+		link(href="http://fonts.googleapis.com/css?family=Open+Sans:400,300", rel="stylesheet" type="text/css")
+	body
+		#box
+			p(style="font-size: 50px; font-weight: 300; margin-bottom: 10px; color: white") Lookup
+			input(type="textarea", placeholder="Summoner name")#textinput
+			mixin button(text)
+				a(onClick="window.location.href = '/lookup/' + text.toLowerCase() + '/' + getElementById('textinput').value").button
+					p().buttontext
+						= text.toUpperCase()
+			div(style="margin-left: -5px; margin-top: 1px")
+				-each server in ["na", "eun", "euw"]
+					+button(server)

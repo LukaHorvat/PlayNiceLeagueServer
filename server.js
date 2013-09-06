@@ -10,27 +10,44 @@ var stats = require("./stats");
 var _ = require("underscore");
 
 var express = require("express");
+var stylus = require("stylus");
 var app = express();
 
 app.configure(function () {
 	app.use(express.bodyParser());
 });
 
+app.set("views", __dirname + "/views");
+app.set("view engine", "jade");
+
+function compile(str, path) {
+	return stylus(str)
+		.set('filename', path);
+}
+app.use(stylus.middleware({ 
+	src: __dirname + '/public', 
+	compile: compile
+}));
+app.use(express.static(__dirname + '/public'));
+
 banList = {};
 
 app.post("/", function (request, response) {
 	var ip = request.get("X-Forwarded-For").split(",")[0];
 	console.log("Connection from: " + ip);
+  	response.setHeader('Content-Type', 'application/json');
 
 	var ban = banList[ip];
 	if (ban) {
 		if (Date.now() - ban.time > 15 * 60 * 1000) delete banList[ip];
 		else {
 			ban.time = Date.now();
+			response.send({
+				error: "Banned ip"
+			});
 			return;
 		}
 	} 
-  	response.setHeader('Content-Type', 'application/json');
 	var req = request.body;
 	try {
 		if (["na", "euw", "eun"].indexOf(req.server) === -1) throw new Error("The server code isn't recognized");
@@ -39,7 +56,7 @@ app.post("/", function (request, response) {
 			var count = 0;
 			var array = [];
 			_.each(req.targets, function (target, index, list) {
-				storage.getPlayer(target, req.server, function (player) {
+				storage.getPlayer(target.toLowerCase(), req.server, function (player) {
 					array.push(player);
 					count++;
 					if (count == 4) {
@@ -54,15 +71,15 @@ app.post("/", function (request, response) {
 				console.log("TOO MANY REQUESTS, NEED MORE MONEY");
 				return;
 			}
-			checkSubmitValidity(req.reporter, req.reportedId, req.server, function (res) {
+			checkSubmitValidity(req.reporter.toLowerCase(), req.reportedId, req.server, function (res) {
 				if (res.requiredAPI) {
 					storage.incrementAPICalls();
 				}
 				if (res.valid) {
-					storage.addRating(req.reportedName, req.server, req.rating, function () {
+					storage.addRating(req.reportedName.toLowerCase(), req.server, req.rating, function () {
 						if (req.rating === -1) {
 							if (["solo", "quitter", "bully"].indexOf(req.tag) === -1) throw new Error("The tag isn't recognized");
-							storage.addTag(req.reportedName, req.server, req.tag);
+							storage.addTag(req.reportedName.toLowerCase(), req.server, req.tag);
 						}
 					});
 				} else {
@@ -76,16 +93,24 @@ app.post("/", function (request, response) {
 	} catch (err) {
 		console.log("Bad data, error: " + err);
 		console.log("banned IP: " + ip);
+		response.send({
+			error: "Bad data"
+		});
 		banList[ip] = {
 			time: Date.now()
 		};
 	}
 });
 
+app.get("/lookup/:server/:name", function (request, response) {
+  	response.setHeader('Content-Type', 'application/json');
+	storage.getPlayer(request.params.name.toLowerCase(), request.params.server, function (player) {
+		response.send(player);
+	});
+});
+
 app.get("/", function (request, response) {
-	console.log("Get request");
-	console.log(request.get("X-Forwarded-For"));
-	response.send("This server doesn't respond to GET requests");
+	response.render("lookup");
 });
 
 app.listen(process.env.PORT);

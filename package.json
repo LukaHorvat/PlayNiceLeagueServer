@@ -12,7 +12,9 @@
     "underscore"  : "*",
     "time"        : "*",
     "express"     : "*",
-    "nodetime"    : "*"
+    "nodetime"    : "*",
+    "jade"        : "*",
+    "stylus"      : "*"
   },
   "repository": "",
   "author": "",
