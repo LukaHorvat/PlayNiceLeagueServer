@@ -14,7 +14,7 @@ else
 		span#downtext
 			= downVotes
 	p(style="font-size: 20px; margin-top: 0; margin-bottom: 0") Tags
-	each amount, tagName in tags
+	each amount, tagName in {"solo": tags.solo, "bully": tags.bully, "quitter": tags.quitter}
 		div.tag
 			b
 				= tagName.charAt(0).toUpperCase() + tagName.slice(1)
