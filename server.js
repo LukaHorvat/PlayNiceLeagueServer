@@ -33,12 +33,16 @@ app.use(express.static(__dirname + '/public'));
 banList = {};
 
 app.post("/", function (request, response) {
-	var ip = request.get("X-Forwarded-For").split(",")[0];
+	if (request.get("X-Forwarded-For"))	{
+		var ip = request.get("X-Forwarded-For").split(",")[0];
+	} else {
+		var ip = "local";
+	}
 	console.log("Connection from: " + ip);
   	response.setHeader('Content-Type', 'application/json');
 
 	var ban = banList[ip];
-	if (ban) {
+	if (ip !== "local" && ban) {
 		if (Date.now() - ban.time > 15 * 60 * 1000) delete banList[ip];
 		else {
 			ban.time = Date.now();
@@ -82,11 +86,17 @@ app.post("/", function (request, response) {
 							storage.addTag(req.reportedName.toLowerCase(), req.server, req.tag);
 						}
 					});
+					response.send(JSON.stringify({
+						status: "success"
+					}));
 				} else {
-					console.log("Invalid report, banned IP: " + ip);
+					console.log("Invalid report, banning IP: " + ip);
 					banList[ip] = {
 						time: Date.now()
 					};
+					response.send(JSON.stringify({
+						error: "Invalid report"
+					}));
 				}
 			});
 		}

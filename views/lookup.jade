@@ -5,14 +5,25 @@ html(lang="en")
 		link(rel="stylesheet", href="/global.css")
 		link(rel="stylesheet", href="/lookup.css")
 		link(href="http://fonts.googleapis.com/css?family=Open+Sans:400,300", rel="stylesheet" type="text/css")
+		script(src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js")
+		script(type="text/javascript").
+			function displayPlayer(player, server) {
+				if ($("#playerdisplay").length === 0) {
+					$("#box").append("<div id='playerdisplay'></div>");
+				}
+				console.log(button);
+				$.get("http://127.0.0.1:5000/lookup/" + server + "/" + player, function (data) {
+					console.log($("#playerdisplay"));
+					$("#playerdisplay").html(JSON.stringify(data));
+				});
+			}
 	body
 		#box
 			p(style="font-size: 50px; font-weight: 300; margin-bottom: 10px; color: white") Lookup
 			input(type="textarea", placeholder="Summoner name")#textinput
 			mixin button(text)
-				a(onClick="window.location.href = '/lookup/' + text.toLowerCase() + '/' + getElementById('textinput').value").button
+				div(onClick="displayPlayer($('#textinput')[0].value, '" + text.toLowerCase() + "')").button
 					p().buttontext
 						= text.toUpperCase()
-			div(style="margin-left: -5px; margin-top: 1px")
-				-each server in ["na", "eun", "euw"]
-					+button(server)
+			-each server in ["na", "eun", "euw"]
+				+button(server)

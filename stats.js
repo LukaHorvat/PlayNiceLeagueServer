@@ -81,6 +81,7 @@
 			server: server,
 			time: Date.now()
 		};
+		var now = Date.now();
 		for (var i = 0; i < spamCache.length; ++i)
 		{
 			if (now - spamCache[i].time > 15 * 60 * 1000) {
@@ -89,6 +90,7 @@
 			} else if (spamCache[i].reporter === reporter && spamCache[i].reportedId === reportedId && spamCache[i].server === server) {
 				cache.splice(0, 1);
 				spamCache.push(log);
+				console.log("Reporter already reported this player");
 				callback({
 					valid: false,
 					requiredAPI: false 
@@ -102,6 +104,7 @@
 			spamCache.push(log);
 			now.setTimezone("America/Los_Angeles");
 			if (now - new time.Date(game.time) > 5 * 60 * 1000) {
+				console.log("Reporter's last game was " + (now - new time.Date(game.time)) / 1000 / 60 + " minutes ago");
 				callback({
 					valid: false,
 					requiredAPI: true 
@@ -112,6 +115,7 @@
 					requiredAPI: true 
 				});
 			} else {
+				console.log("Reporter didn't play with the reported");
 				callback({
 					valid: false,
 					requiredAPI: true 

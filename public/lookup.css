@@ -6,21 +6,24 @@
 }
 #textinput {
   font-size: 50px;
-  font-family: "Open Sans" sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-weight: 300;
   width: 500px;
+  height: 68px;
+  margin: 0px;
+  border: 0;
+  padding: 0;
 }
 .button {
-  width: 161.66666666666666px;
-  height: 95px;
+  width: 160px;
+  height: 68.33333333333333px;
   float: left;
   text-align: center;
   background-color: #aaa;
-  margin: 5px;
-  display: block;
+  margin: 10px 10px 0 0;
 }
 .button p {
-  line-height: 95px;
+  line-height: 63px;
 }
 .button :hover {
   background-color: #999;
@@ -30,8 +33,17 @@
   font-size: 30px;
   margin-top: 0px;
   height: 100%;
-  display: block;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+}
+#playerdisplay {
+  background-color: rgba(0,0,0,0.3);
+  clear: both;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #333;
+  width: 500px;
+  margin-top: 10px;
+  float: left;
 }
