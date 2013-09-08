@@ -113,9 +113,8 @@ app.post("/", function (request, response) {
 });
 
 app.get("/lookup/:server/:name", function (request, response) {
-  	response.setHeader('Content-Type', 'application/json');
 	storage.getPlayer(request.params.name.toLowerCase(), request.params.server, function (player) {
-		response.send(player);
+		response.render("playerdisplay", player);
 	});
 });
 

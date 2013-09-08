@@ -9,16 +9,36 @@ html(lang="en")
 		script(type="text/javascript").
 			function displayPlayer(player, server) {
 				if ($("#playerdisplay").length === 0) {
-					$("#box").append("<div id='playerdisplay'></div>");
+					$("#endmarker").before("<div id='playerdisplay'></div>");
 				}
-				console.log(button);
 				$.get("http://127.0.0.1:5000/lookup/" + server + "/" + player, function (data) {
-					console.log($("#playerdisplay"));
-					$("#playerdisplay").html(JSON.stringify(data));
+					$("#playerdisplay").html(data);
+					centerBox();
 				});
 			}
+
+			function viewport()
+			{
+				var e = window;
+				var	a = 'inner';
+				if ( !( 'innerWidth' in window ) )
+				{
+				a = 'client';
+				e = document.documentElement || document.body;
+				}
+				return { width : e[ a+'Width' ] , height : e[ a+'Height' ] };
+			}
+
+			function centerBox() {
+				var boxHeight = $("#endmarker").offset().top - $("#startmarker").offset().top;
+				console.log(boxHeight);
+				$("#box").css("margin-top", (viewport().height / 2 - $("#box")[0].offsetHeight / 2) + "px");
+			}
+
+			window.onresize = centerBox;
 	body
 		#box
+			div(style="clear:both")#startmarker
 			p(style="font-size: 50px; font-weight: 300; margin-bottom: 10px; color: white") Lookup
 			input(type="textarea", placeholder="Summoner name")#textinput
 			mixin button(text)
@@ -27,3 +47,6 @@ html(lang="en")
 						= text.toUpperCase()
 			-each server in ["na", "eun", "euw"]
 				+button(server)
+			div(style="clear:both")#endmarker
+		script(type="text/javascript").
+			centerBox();

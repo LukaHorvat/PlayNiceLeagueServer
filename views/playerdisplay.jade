@@ -1,0 +1,22 @@
+if upVotes == 10 && downVotes == 0
+	p(style="font-size: 20px; margin: 0px") No rating yet. Starts with 10 up votes.
+else
+	- var greenWidth = (upVotes / (upVotes + downVotes) * 480);
+	- var redWidth = (downVotes / (upVotes + downVotes) * 480);
+	p(style="font-size: 20px; margin-top: 0; margin-bottom: 0") Votes
+	div(style="width: " + greenWidth + "px")#votecountergreen.votecounter
+	div(style="width: " + redWidth + "px")#votecounterred.votecounter
+	br(style="clear: both")
+	div(style="margin: 5px; float: left; text-align: right; width: " + (greenWidth - 10) + "px")
+		span#uptext
+			= upVotes
+	div(style="margin: 5px; float: left; width: " + (redWidth - 10) + "px")
+		span#downtext
+			= downVotes
+	p(style="font-size: 20px; margin-top: 0; margin-bottom: 0") Tags
+	each amount, tagName in tags
+		div.tag
+			b
+				= tagName.charAt(0).toUpperCase() + tagName.slice(1)
+			br
+			= amount
