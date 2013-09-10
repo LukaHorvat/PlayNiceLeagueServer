@@ -64,6 +64,7 @@ app.post("/", function (request, response) {
 					array.push(player);
 					count++;
 					if (count == 4) {
+						console.log(array);
 						response.send(JSON.stringify({
 							players: array
 						}));
@@ -86,6 +87,7 @@ app.post("/", function (request, response) {
 							storage.addTag(req.reportedName.toLowerCase(), req.server, req.tag);
 						}
 					});
+					console.log("Success");
 					response.send(JSON.stringify({
 						status: "success"
 					}));

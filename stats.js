@@ -84,7 +84,7 @@
 		var now = Date.now();
 		for (var i = 0; i < spamCache.length; ++i)
 		{
-			if (now - spamCache[i].time > 15 * 60 * 1000) {
+			if (now - spamCache[i].time > 10 * 60 * 1000) {
 				cache.splice(0, 1);
 				i--;
 			} else if (spamCache[i].reporter === reporter && spamCache[i].reportedId === reportedId && spamCache[i].server === server) {
