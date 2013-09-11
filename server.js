@@ -49,6 +49,7 @@ app.post("/", function (request, response) {
 			response.send({
 				error: "Banned ip"
 			});
+			response.end();
 			return;
 		}
 	} 
@@ -74,6 +75,7 @@ app.post("/", function (request, response) {
 		} else if (req.type === "submit") {
 			if (storage.getAPICalls() >= 450) {
 				console.log("TOO MANY REQUESTS, NEED MORE MONEY");
+				response.end();
 				return;
 			}
 			checkSubmitValidity(req.reporter.toLowerCase(), req.reportedId, req.server, function (res) {
@@ -112,6 +114,7 @@ app.post("/", function (request, response) {
 			time: Date.now()
 		};
 	}
+	response.end();
 });
 
 app.get("/lookup/:server/:name", function (request, response) {
