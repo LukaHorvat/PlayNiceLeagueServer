@@ -45,10 +45,11 @@ app.post("/", function (request, response) {
 	if (ip !== "local" && ban) {
 		if (Date.now() - ban.time > 15 * 60 * 1000) delete banList[ip];
 		else {
+			console.log("Banned ip, closing connection");
 			ban.time = Date.now();
-			response.send({
+			response.write(JSON.stringify({
 				error: "Banned ip"
-			});
+			}));
 			response.end();
 			return;
 		}
@@ -66,9 +67,10 @@ app.post("/", function (request, response) {
 					count++;
 					if (count == 4) {
 						console.log(array);
-						response.send(JSON.stringify({
+						response.write(JSON.stringify({
 							players: array
 						}));
+						response.end();
 					}
 				});
 			});
@@ -90,31 +92,33 @@ app.post("/", function (request, response) {
 						}
 					});
 					console.log("Success");
-					response.send(JSON.stringify({
+					response.write(JSON.stringify({
 						status: "success"
 					}));
+					response.end();
 				} else {
 					console.log("Invalid report, banning IP: " + ip);
 					banList[ip] = {
 						time: Date.now()
 					};
-					response.send(JSON.stringify({
+					response.write(JSON.stringify({
 						error: "Invalid report"
 					}));
+					response.end();
 				}
 			});
 		}
 	} catch (err) {
 		console.log("Bad data, error: " + err);
 		console.log("banned IP: " + ip);
-		response.send({
-			error: "Bad data"
-		});
 		banList[ip] = {
 			time: Date.now()
 		};
+		response.write(JSON.stringyfy({
+			error: "Bad data"
+		}));
+		response.end();
 	}
-	response.end();
 });
 
 app.get("/lookup/:server/:name", function (request, response) {
