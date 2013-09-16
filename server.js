@@ -61,6 +61,7 @@ app.post("/", function (request, response) {
 		if (req.type === "lookup") {
 			var count = 0;
 			var array = [];
+			console.log("Getting player info");
 			_.each(req.targets, function (target, index, list) {
 				storage.getPlayer(target.toLowerCase(), req.server, function (player) {
 					array.push(player);
@@ -75,36 +76,52 @@ app.post("/", function (request, response) {
 				});
 			});
 		} else if (req.type === "submit") {
-			if (storage.getAPICalls() >= 450) {
-				console.log("TOO MANY REQUESTS, NEED MORE MONEY");
-				response.end();
-				return;
-			}
-			checkSubmitValidity(req.reporter.toLowerCase(), req.reportedId, req.server, function (res) {
-				if (res.requiredAPI) {
-					storage.incrementAPICalls();
-				}
-				if (res.valid) {
-					storage.addRating(req.reportedName.toLowerCase(), req.server, req.rating, function () {
-						if (req.rating === -1) {
-							if (["solo", "quitter", "bully"].indexOf(req.tag) === -1) throw new Error("The tag isn't recognized");
-							storage.addTag(req.reportedName.toLowerCase(), req.server, req.tag);
+			console.log("Checking daily API calls");
+			storage.getAPICalls(function (calls) {
+				console.log("Daily: " + calls);
+				if (calls >= 450)
+				{
+					console.log("TOO MANY REQUESTS, NEED MORE MONEY");
+					response.end();
+					return;
+				} else {
+					console.log("Checking submit validity");
+					checkSubmitValidity(req.reporter.toLowerCase(), req.reportedId, req.server, function (res) {
+						if (res === "API DOWN") {
+							console.log("API probably down, terminated request");
+							response.write(JSON.stringify({
+								error: "API down"
+							}));
+							response.end();
+							return;
+						}
+						if (res.requiredAPI) {
+							storage.incrementAPICalls();
+						}
+						if (res.valid) {
+							console.log("Valid submit");
+							storage.addRating(req.reportedName.toLowerCase(), req.server, req.rating, function () {
+								if (req.rating === -1) {
+									if (["solo", "quitter", "bully"].indexOf(req.tag) === -1) throw new Error("The tag isn't recognized");
+									storage.addTag(req.reportedName.toLowerCase(), req.server, req.tag);
+								}
+								console.log("Added rating");
+							});
+							response.write(JSON.stringify({
+								status: "success"
+							}));
+							response.end();
+						} else {
+							console.log("Invalid report, banning IP: " + ip);
+							banList[ip] = {
+								time: Date.now()
+							};
+							response.write(JSON.stringify({
+								error: "Invalid report"
+							}));
+							response.end();
 						}
 					});
-					console.log("Success");
-					response.write(JSON.stringify({
-						status: "success"
-					}));
-					response.end();
-				} else {
-					console.log("Invalid report, banning IP: " + ip);
-					banList[ip] = {
-						time: Date.now()
-					};
-					response.write(JSON.stringify({
-						error: "Invalid report"
-					}));
-					response.end();
 				}
 			});
 		}

@@ -2,9 +2,27 @@
 	var https = require("https");
 	var _ = require("underscore");
 	var time = require("time")(Date);
+
 	var cache = [];
+	var localAPICallLimiter = {
+		day: new time.Date().getDay(),
+		count: 0
+	}
 
 	getMatchHistory = function (name, server, callback) {
+		var day = new time.Date().getDay();
+		if (localAPICallLimiter.day !== day) {
+			localAPICallLimiter = {
+				day: day,
+				count: 1
+			}
+		} else if (localAPICallLimiter.count >= 450) {
+			console.log("Throttling repeated API calls");
+			callback("API DOWN");
+			return;
+		} else {
+			localAPICallLimiter.count++;
+		}
 		var options = {
 			hostname: "teemojson.p.mashape.com",
 			path: "/player/" + server + "/" + name + "/recent_games",
@@ -29,6 +47,8 @@
 					});
 					callback(history);
 				} else {
+					console.log("Something went wrong with the API call. Output: ");
+					console.log(JSON.stringify(history, null, 4));
 					getMatchHistory(name, server, callback);
 				}
 			});
@@ -47,13 +67,19 @@
 				i--;
 			} else {
 				if (cache[i].summonerName === name && cache[i].server === server) {
+					console.log("Getting game from cache");
 					callback(cache[i]);
 					return;
 				} 
 			}
 		}
 
+		console.log("Getting game via API");
 		getMatchHistory(name, server, function (history) {
+			if (history === "API DOWN") {
+				callback("API DOWN");
+				return;
+			}
 			var lastGame = history.data.gameStatistics.array[0];
 			var players = [];
 			for (var i = 0; i < lastGame.fellowPlayers.array.length; ++i) {
@@ -98,7 +124,11 @@
 				return;
 			}
 		}
+		console.log("Getting last game of " + reporter);
 		getLastGame(reporter, server, function (game) {
+			if (game === "API DOWN") {
+				callback("API DOWN");
+			}
 			var now = new time.Date();
 
 			spamCache.push(log);
@@ -110,6 +140,7 @@
 					requiredAPI: true 
 				});
 			} else if (game.players.indexOf(reportedId) !== -1) {
+				console.log("Report checks out");
 			 	callback({
 					valid: true,
 					requiredAPI: true 

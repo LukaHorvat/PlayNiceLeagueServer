@@ -92,10 +92,10 @@
 		});
 	}
 
-	var getAPICalls = function () {
+	var getAPICalls = function (callback) {
 		APICounter.findOne({}, function (err, counter) {
-			if (counter === null) return 0;
-			else return counter.number;
+			if (counter === null) callback(0);
+			else callback(counter.number);
 		});
 	}
 
