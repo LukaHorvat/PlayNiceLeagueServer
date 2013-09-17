@@ -111,10 +111,10 @@
 		for (var i = 0; i < spamCache.length; ++i)
 		{
 			if (now - spamCache[i].time > 10 * 60 * 1000) {
-				cache.splice(0, 1);
+				spamCache.splice(0, 1);
 				i--;
 			} else if (spamCache[i].reporter === reporter && spamCache[i].reportedId === reportedId && spamCache[i].server === server) {
-				cache.splice(0, 1);
+				spamCache.splice(0, 1);
 				spamCache.push(log);
 				console.log("Reporter already reported this player");
 				callback({
@@ -125,6 +125,7 @@
 			}
 		}
 		console.log("Getting last game of " + reporter);
+		var currentCalls = localAPICallLimiter.count;
 		getLastGame(reporter, server, function (game) {
 			if (game === "API DOWN") {
 				callback("API DOWN");
@@ -143,7 +144,7 @@
 				console.log("Report checks out");
 			 	callback({
 					valid: true,
-					requiredAPI: true 
+					requiredAPI: currentCalls !== localAPICallLimiter.count //Is number of API calls increased, the API was obviously used 
 				});
 			} else {
 				console.log("Reporter didn't play with the reported");
