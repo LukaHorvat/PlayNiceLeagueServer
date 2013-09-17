@@ -1,19 +1,20 @@
 if upVotes == 10 && downVotes == 0
 	p(style="font-size: 20px; margin: 0px") No rating yet. Starts with 10 up votes.
 else
-	- var greenWidth = (upVotes / (upVotes + downVotes) * 480);
-	- var redWidth = (downVotes / (upVotes + downVotes) * 480);
+	- var greenWidth = (upVotes / (upVotes + downVotes) * 470) + 5;
+	- var redWidth = (downVotes / (upVotes + downVotes) * 470) + 5;
 	p(style="font-size: 20px; margin-top: 0; margin-bottom: 0") Votes
 	div(style="width: " + greenWidth + "px")#votecountergreen.votecounter
 	div(style="width: " + redWidth + "px")#votecounterred.votecounter
 	br(style="clear: both")
-	div(style="margin: 6px 5px 0 0; float: left; text-align: right; width: " + (greenWidth - 3) + "px")
-		span#uptext
-			= upVotes
-	div(style="margin: 6px 5px 0 0; float: left; width: " + (redWidth - 5) + "px")
-		span#downtext
-			= downVotes
-	p(style="font-size: 20px; margin-top: 0; margin-bottom: 0") Tags
+	div(style="position: absolute; width: 480px")
+		div(style="position: absolute; margin-top: 6px; float: left; text-align: right; right: " + (redWidth + 3) + "px")
+			span#uptext
+				= upVotes
+		div(style="position: absolute; margin-top: 6px; float: left; left: " + (greenWidth + 3) + "px")
+			span#downtext
+				= downVotes
+	p(style="font-size: 20px; margin-top: 28px; margin-bottom: 0") Tags
 	each amount, tagName in {"solo": tags.solo, "bully": tags.bully, "quitter": tags.quitter}
 		div.tag
 			b
