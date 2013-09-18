@@ -9,7 +9,14 @@
 		count: 0
 	}
 
-	getMatchHistory = function (name, server, callback) {
+	getMatchHistory = function (name, server, callback, rec) {
+		if (typeof rec === "undefined") rec = 0;
+		rec++;
+		if (rec > 5) {
+			console.log("Throttling repeated API calls (rec limit)");
+			callback("API DOWN");
+			return;
+		}
 		var day = new time.Date().getDay();
 		if (localAPICallLimiter.day !== day) {
 			localAPICallLimiter = {
@@ -49,7 +56,7 @@
 				} else {
 					console.log("Something went wrong with the API call. Output: ");
 					console.log(JSON.stringify(history, null, 4));
-					getMatchHistory(name, server, callback);
+					getMatchHistory(name, server, callback, rec);
 				}
 			});
 		});
@@ -129,6 +136,7 @@
 		getLastGame(reporter, server, function (game) {
 			if (game === "API DOWN") {
 				callback("API DOWN");
+				return;
 			}
 			var now = new time.Date();
 
