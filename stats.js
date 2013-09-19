@@ -67,7 +67,8 @@
 		name = name.replace(/\s/g, "");
 		name = name.toLowerCase();
 
-		var now = Date.now();
+		var now = new time.Date();
+		now.setTimezone("America/Los_Angeles");
 		for (var i = 0; i < cache.length; ++i) {
 			if (now - cache[i].time > 15 * 60 * 1000) {
 				cache.splice(0, 1);
