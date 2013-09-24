@@ -98,7 +98,7 @@
 			acc = "";
 			var game = {
 				players: players, 
-				time: lastGame.createDate, 
+				time: new time.Date(lastGame.createDate), 
 				summonerName: name, 
 				server: server
 			};
@@ -143,7 +143,7 @@
 
 			spamCache.push(log);
 			now.setTimezone("America/Los_Angeles");
-			if (now - new time.Date(game.time) > 5 * 60 * 1000) {
+			if (now - game.time > 5 * 60 * 1000) {
 				console.log("Reporter's last game was " + (now - new time.Date(game.time)) / 1000 / 60 + " minutes ago");
 				callback({
 					valid: false,
